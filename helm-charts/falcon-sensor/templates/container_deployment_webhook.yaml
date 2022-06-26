@@ -67,7 +67,7 @@ spec:
         - configMapRef:
             name: {{ include "falcon-sensor.fullname" . }}-config
         ports:
-        - name: https
+        - name: api
           containerPort: {{ .Values.container.injectorPort }}
         volumeMounts:
         - name: {{ include "falcon-sensor.name" . }}-tls-certs
