@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "falcon-sensor.fullname" . }}-access-binding
+  name: read-secrets-global
   labels:
     app: {{ include "falcon-sensor.name" . }}
     app.kubernetes.io/name: {{ include "falcon-sensor.name" . }}
@@ -21,5 +21,5 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ include "falcon-sensor.fullname" . }}-access-role
+  name: secret-reader
   apiGroup: rbac.authorization.k8s.io
