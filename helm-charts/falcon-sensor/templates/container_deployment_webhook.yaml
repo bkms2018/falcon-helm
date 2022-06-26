@@ -12,10 +12,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "falcon-sensor.name" . }}-injector
+  name: injector
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ include "falcon-sensor.name" . }}-injector
+    app: injector
     app.kubernetes.io/name: {{ include "falcon-sensor.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -26,7 +26,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "falcon-sensor.name" . }}-injector
+      app: injector
       app.kubernetes.io/name: {{ include "falcon-sensor.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: "container_sensor"
@@ -34,7 +34,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "falcon-sensor.name" . }}-injector
+        app: injector
         app.kubernetes.io/name: {{ include "falcon-sensor.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: "container_sensor"
@@ -59,18 +59,18 @@ spec:
         - name: {{ include "falcon-sensor.fullname" . }}-pull-secret
       {{- end }}
       containers:
-      - name: {{ include "falcon-sensor.name" . }}-injector
+      - name: injector
         image: "{{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}"
         imagePullPolicy: "{{ .Values.container.image.pullPolicy }}"
         command: ["injector"]
         envFrom:
         - configMapRef:
-            name: {{ include "falcon-sensor.fullname" . }}-config
+            name: injector-config
         ports:
         - name: api
           containerPort: {{ .Values.container.injectorPort }}
         volumeMounts:
-        - name: {{ include "falcon-sensor.name" . }}-tls-certs
+        - name: tls-certs
           mountPath: /run/secrets/tls
           readOnly: true
         readinessProbe:
@@ -90,9 +90,9 @@ spec:
         resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-      - name: {{ include "falcon-sensor.name" . }}-tls-certs
+      - name: tls-certs
         secret:
-          secretName: {{ include "falcon-sensor.name" . }}-tls
+          secretName: injector-tls
 ---
 apiVersion: v1
 kind: Secret
@@ -149,7 +149,7 @@ webhooks:
       url: https://{{ $fullName }}:443/mutate
       {{- else }}
       service:
-        name: {{ include "falcon-sensor.name" . }}-injector
+        name: injector
         namespace: {{ .Release.Namespace }}
         path: "/mutate"
       {{- end }}
