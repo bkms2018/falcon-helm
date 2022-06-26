@@ -97,7 +97,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "falcon-sensor.name" . }}-tls
+  name: injector-tls
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ include "falcon-sensor.name" . }}
