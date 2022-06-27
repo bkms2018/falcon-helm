@@ -38,7 +38,7 @@ rules:
   - {{ include "falcon-sensor.fullname" . }}-node
 {{- end }}
   {{- if .Values.container.enabled }}
-  - {{ include "falcon-sensor.fullname" . }}-container
+  - injector
 {{- end }}
   verbs:
   - use
